@@ -1,38 +1,39 @@
-# Use Ubuntu as base image
-FROM ubuntu:22.04
-
-# Avoid prompts from apt
-ENV DEBIAN_FRONTEND=noninteractive
+# Use Alpine as the base image
+FROM alpine:latest
 
 # Install essential dependencies
-RUN apt-get update && apt-get install -y \
-    git \
+RUN apk add --no-cache \
+    bash \
     curl \
     wget \
-    unzip \
-    build-essential \
-    software-properties-common \
-    python3-pip \
-    python3-venv \
+    python3 \
+    py3-pip \
     nodejs \
     npm \
     ripgrep \
-    fd-find \
-    # Neovim dependencies
-    && add-apt-repository ppa:neovim-ppa/stable \
-    && apt-get update \
-    && apt-get install -y neovim \
-    && apt-get clean \
-    && rm -rf /var/lib/apt/lists/*
+    fd \
+    fuse \
+    libstdc++ \
+    gcc \
+    g++ \
+    make \
+    cmake \
+    git \
+    ncurses-dev \
+    && git clone --depth 1 https://github.com/neovim/neovim.git /neovim \
+    && cd /neovim \
+    && make CMAKE_BUILD_TYPE=Release \
+    && make install \
+    && rm -rf /neovim
 
 # Create development user
-RUN useradd -m -s /bin/bash devuser
+RUN adduser -D devuser
 USER devuser
 WORKDIR /home/devuser
 
 # Set up Neovim configuration directory
 RUN mkdir -p /home/devuser/.config/nvim
 
-# Install Lazy.nvim
-RUN git clone --filter=blob:none https://github.com/folke/lazy.nvim.git \
-    --depth 1 /home/devuser/.local/share/nvim/lazy/lazy.nvim
+# Start Neovim by default
+CMD ["nvim"]
+
