@@ -1,35 +1,30 @@
-# Use Alpine as the base image
+# Use Alpine Linux as base image
 FROM alpine:latest AS base
 
-# Install essential dependencies
+# Install essential build dependencies
 RUN apk add --no-cache \
-    autoconf \
-    automake \
-    build-base \
-    cmake \
-    ninja \
-    bash \
-    coreutils \
+    git \
     curl \
     wget \
     unzip \
+    build-base \
     python3 \
     py3-pip \
     nodejs \
     npm \
+    neovim \
     ripgrep \
     fd \
-    fuse \
-    libstdc++ \
+    # Additional dependencies for Neovim and development
+    lua5.1 \
+    cargo \
+    cmake \
+    make \
     gcc \
     g++ \
-    git \
-    ncurses-dev \
-    && git clone --depth 1 https://github.com/neovim/neovim.git /neovim \
-    && cd /neovim \
-    && make CMAKE_BUILD_TYPE=Release \
-    && make install \
-    && rm -rf /neovim
+    libstdc++ \
+    # Language support
+    python3-dev
 
 # Create development user
 RUN adduser -D devuser
@@ -41,4 +36,3 @@ RUN mkdir -p /home/devuser/.config/nvim
 
 # Start Neovim by default
 CMD ["nvim"]
-
