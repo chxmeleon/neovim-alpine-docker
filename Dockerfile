@@ -3,9 +3,16 @@ FROM alpine:latest AS base
 
 # Install essential dependencies
 RUN apk add --no-cache \
+    autoconf \
+    automake \
+    build-base \
+    cmake \
+    ninja \
     bash \
+    coreutils \
     curl \
     wget \
+    unzip \
     python3 \
     py3-pip \
     nodejs \
@@ -16,15 +23,13 @@ RUN apk add --no-cache \
     libstdc++ \
     gcc \
     g++ \
-    make \
-    cmake \
     git \
     ncurses-dev \
-
-RUN git clone https://github.com/neovim/neovim.git
-
-ARG VERSION=master
-RUN cd neovim && git checkout ${VERSION} && make CMAKE_BUILD_TYPE=RelWithDebInfo install
+    && git clone --depth 1 https://github.com/neovim/neovim.git /neovim \
+    && cd /neovim \
+    && make CMAKE_BUILD_TYPE=Release \
+    && make install \
+    && rm -rf /neovim
 
 # Create development user
 RUN adduser -D devuser
