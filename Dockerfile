@@ -1,5 +1,5 @@
 # Use Alpine as the base image
-FROM alpine:latest
+FROM alpine:latest AS base
 
 # Install essential dependencies
 RUN apk add --no-cache \
@@ -20,11 +20,11 @@ RUN apk add --no-cache \
     cmake \
     git \
     ncurses-dev \
-    && git clone --depth 1 https://github.com/neovim/neovim.git /neovim \
-    && cd /neovim \
-    && make CMAKE_BUILD_TYPE=Release \
-    && make install \
-    && rm -rf /neovim
+
+RUN git clone https://github.com/neovim/neovim.git
+
+ARG VERSION=master
+RUN cd neovim && git checkout ${VERSION} && make CMAKE_BUILD_TYPE=RelWithDebInfo install
 
 # Create development user
 RUN adduser -D devuser
