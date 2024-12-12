@@ -1,0 +1,10 @@
+version: '3.8'
+services:
+  neovim:
+    build: .
+    volumes:
+      - ./config:/home/devuser/.config/nvim
+      - ./workspace:/home/devuser/workspace
+    working_dir: /home/devuser/workspace
+    stdin_open: true
+    tty: true
