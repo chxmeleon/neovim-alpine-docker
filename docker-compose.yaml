@@ -5,6 +5,7 @@ services:
     volumes:
       - ./nvim:/home/devuser/.config/nvim
       - ./workspace:/home/devuser/workspace
+      - ./lazy_data:/home/devuser/.local/share/nvim/lazy
     working_dir: /home/devuser/workspace
     stdin_open: true
     tty: true

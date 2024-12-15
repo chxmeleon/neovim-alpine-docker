@@ -32,7 +32,12 @@ USER devuser
 WORKDIR /home/devuser
 
 # Set up Neovim configuration directory
-RUN mkdir -p /home/devuser/.config/nvim
+RUN mkdir -p /home/devuser/.config/nvim \
+    && mkdir -p /home/devuser/.local/state \
+    && mkdir -p /home/devuser/.local/share/nvim \
+    && ls -ld /home /home/devuser \
+    && chown -R devuser:devuser /home/devuser/.local
+
 
 # Start Neovim by default
 CMD ["nvim"]
